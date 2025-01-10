@@ -26,6 +26,60 @@ const getMyInvest = () => fetch("https://wts-cert-api.tossinvest.com/api/v1/dash
     "credentials": "include"
 }).then(resp=>resp.json());
 
+/**
+ * @returns { Promise<CurrencyChangeResponse> }
+ */
+const getCurrencyChangeRecords = () => fetch("https://wts-api.tossinvest.com/api/v3/my-assets/transactions/markets/us?size=100&filters=8", {
+    "headers": {
+      "accept": "application/json",
+      "accept-language": "ko,en;q=0.9,en-US;q=0.8,ja;q=0.7",
+    },
+    "referrerPolicy": "no-referrer-when-downgrade",
+    "body": null,
+    "method": "GET",
+    "mode": "cors",
+    "credentials": "include"
+  }).then(resp=>resp.json());
+
+/**
+ *
+ * @param { CompositeKey } compositeKey
+ * @returns { Promise<CurrencyChangeDetailTransaction> }
+ */
+const getCurrencyChangeDetail = (compositeKey) => fetch(`https://wts-cert-api.tossinvest.com/api/v2/my-assets/transactions/markets/us/settled/exchange/${compositeKey.date}-${compositeKey.no}`, {
+    "headers": {
+      "accept": "application/json",
+      "accept-language": "ko,en;q=0.9,en-US;q=0.8,ja;q=0.7",
+    },
+    "referrerPolicy": "no-referrer-when-downgrade",
+    "body": null,
+    "method": "GET",
+    "mode": "cors",
+    "credentials": "include"
+  }).then(resp=>resp.json()).then(resp=>resp.result.transaction);
+
+/** @returns { Promise<Number> } */
+const getAvgDollarPrice = async () => {
+    const currencyRecords = (await getCurrencyChangeRecords().then(resp=>resp.result.body)).reverse();
+    /** @type { CurrencyChangeDetailTransaction[] } */
+    const currencyDetails = await Promise.all(currencyRecords.map(el=>getCurrencyChangeDetail(el.compositeKey)));
+    console.log(currencyDetails);
+    const result = currencyDetails.reduce((acc, cur)=>{
+        if (cur.exchange.withdrawalAmount.currencyCode == "KRW") {
+            acc.avgPrice = (acc.avgPrice * acc.dollarAmount + Math.abs(cur.exchange.withdrawalAmount.amonut)) / (acc.dollarAmount - cur.exchange.depositAmount.amount);
+            acc.dollarAmount += cur.exchange.depositAmount.amount;
+        }
+        else {
+            acc.avgPrice = ((acc.avgPrice * acc.dollarAmount) - Math.abs(czur.exchange.depositAmount.amount)) / (acc.dollarAmount + cur.exchange.withdrawalAmount.amount);
+            acc.dollarAmount += cur.exchange.withdrawalAmount.amount;
+        }
+        console.log(acc, `w: ${cur.exchange.withdrawalAmount.amount} (${cur.exchange.depositAmount.currencyCode})`, `d: ${cur.exchange.depositAmount.amount} (${cur.exchange.depositAmount.currencyCode})`);
+        return acc;
+    }, {avgPrice: 0, dollarAmount: 0}).avgPrice;
+    // 평균환율 오류나고 있음.
+    return result;
+}
+
 const numberFormat = new Intl.NumberFormat("ko-KR");
 (async()=>{
     // MARK: 주문가능금액
