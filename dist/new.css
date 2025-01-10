@@ -68,21 +68,16 @@ body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data
 }
 
 #profit-contents > ul {
-  display: grid;
+  display: flex;
+  flex-wrap: nowrap;
   gap: 0.5rem;
-  grid-template-columns: repeat(5, 1fr);
   overflow-x: auto;
-}
-@media (max-width: 1700px) {
-  #profit-contents > ul {
-    gap: 0.2rem;
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 #profit-contents > ul > li {
   list-style: none;
-  display: grid;
-  grid-auto-flow: column;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.2rem;
 }
 #profit-contents > ul > li > span {
   display: flex;
@@ -117,4 +112,12 @@ select.form-control {
 }
 select.form-control:hover {
   background-color: #33333c;
+}
+
+[data-flag="-1"]::before {
+  content: "-";
+}
+
+[data-flag="1"]::before {
+  content: "+";
 }

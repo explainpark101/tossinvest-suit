@@ -81,20 +81,15 @@ body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data
 
 
 #profit-contents > ul {
-    display: grid;
+    display: flex;
+    flex-wrap: nowrap;
     gap: .5rem;
-    @media (max-width: #{$media-size}) {
-        & {
-            gap: .2rem;
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-    grid-template-columns: repeat(5, 1fr);
     overflow-x: auto;
     & > li {
       list-style: none;
-      display: grid;
-      grid-auto-flow: column;
+      display: flex;
+      flex-wrap: nowrap;
+      gap: .2rem;
 
       & > span {
         display: flex;
@@ -135,4 +130,10 @@ select.form-control {
 
     border-radius: 4px;
     border: none;
+}
+[data-flag="-1"]::before {
+    content: "-";
+}
+[data-flag="1"]::before {
+    content: "+";
 }

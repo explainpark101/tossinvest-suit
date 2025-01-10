@@ -98,10 +98,10 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
             let profitElement = `
                 <ul style="--tds-desktop-foreground-color: var(--adaptiveGrey800); font-size: 0.7rem">
                     <li><span>총 투자:</span> <span>${numberFormat.format(myInvests.principalAmount.krw.toFixed(2))}원 ($${numberFormat.format(myInvests.principalAmount.usd)})</span></li>
-                    <li><span>평가금:</span><span>${numberFormat.format(myInvests.evaluatedAmount.krw.toFixed(0))}원 (<span  style="color: var(--${myInvests.profitLossRate.krw > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.krw < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})">${(myInvests.profitLossRate.krw * 100).toFixed(2)}%</span> )</span></li>
-                    <li><span>손실액:</span><span>${numberFormat.format(myInvests.profitLossAmount.krw.toFixed(0))}원 (<span  style="color: var(--${myInvests.profitLossRate.krw  > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.krw < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})">${(myInvests.profitLossRate.krw * 100).toFixed(2)}%</span>)</span></li>
-                    <li><span>평가금($):</span><span>$${numberFormat.format(myInvests.evaluatedAmount.usd.toFixed(2))} (<span  style="color: var(--${myInvests.profitLossRate.usd > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.usd < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})">${(myInvests.profitLossRate.usd * 100).toFixed(2)}%</span> )</span></li>
-                    <li><span>손실액($):</span><span>$${numberFormat.format(myInvests.profitLossAmount.usd.toFixed(2))} (<span  style="color: var(--${myInvests.profitLossRate.usd > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.usd < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})">${(myInvests.profitLossRate.usd * 100).toFixed(2)}%</span>)</span></li>
+                    <li><span>평가금:</span><span>${numberFormat.format(myInvests.evaluatedAmount.krw.toFixed(0))}원 [<span  style="color: var(--${myInvests.profitLossRate.krw  > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.krw < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})"> <span data-flag="${Math.abs(myInvests.profitLossAmount.krw)/myInvests.profitLossAmount.krw}">${numberFormat.format(Math.abs(myInvests.profitLossAmount.krw).toFixed(0))}원 (${(Math.abs(myInvests.profitLossRate.krw) * 100).toFixed(2)}%</span>)</span>]</span></li>
+                    <li><span>평가금($):</span><span>$${numberFormat.format(myInvests.evaluatedAmount.usd.toFixed(2))} [
+                        <span  style="color: var(--${myInvests.profitLossRate.usd > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.usd < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})"><span data-flag="${myInvests.profitLossAmount.usd / Math.abs(myInvests.profitLossAmount.usd)}">$${numberFormat.format(Math.abs(myInvests.profitLossAmount.usd).toFixed(2))} (${(myInvests.profitLossRate.usd * 100).toFixed(2)}%</span>)</span>
+                    ]</span></li>
                 </ul>
             `;
             stockHorizontalBox.querySelector("#profit-contents").innerHTML = profitElement;
@@ -182,7 +182,8 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                     --tds-desktop-line-height: 1.45;
                                                     --tds-desktop-font-size: 10px;
                                                 "
-                                            >1주당수익금
+
+                                            >1주당수익
                                                 <span
                                                     style="
                                                         --tds-desktop-foreground-color: var(
@@ -190,7 +191,8 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                         );
                                                         color: var(--tds-desktop-foreground-color);
                                                     "
-                                                >$${numberFormat.format((item.currentPrice.usd - item.purchasePrice.usd).toFixed(2))}</span>
+                                                    data-flag="${Math.abs(item.currentPrice.usd - item.purchasePrice.usd) / (item.currentPrice.usd - item.purchasePrice.usd)}"
+                                                >$${numberFormat.format(Math.abs(item.currentPrice.usd - item.purchasePrice.usd).toFixed(2))}</span>
                                             </span>
                                         </div></span
                                     ><span class="tw-1uqcyiik tw-1uqcyiim"
@@ -206,7 +208,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                     --tds-desktop-line-height: 1.45;
                                                     --tds-desktop-font-size: 14px;
                                                 "
-                                                >$${numberFormat.format(item.evaluatedAmount.usd.toFixed(2))} (${numberFormat.format(parseInt(item.evaluatedAmount.krw))}원)</span
+                                                >$${numberFormat.format(Math.abs(item.evaluatedAmount.usd).toFixed(2))} (${numberFormat.format(parseInt(Math.abs(item.evaluatedAmount.krw)))}원)</span
                                             ><span
                                                 class="tw-1r5dc8g0"
                                                 style="
@@ -217,7 +219,8 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                     --tds-desktop-line-height: 1.45;
                                                     --tds-desktop-font-size: 12px;
                                                 "
-                                                >$${numberFormat.format(item.profitLossAmount.usd.toFixed(2))} (${numberFormat.format((item.profitLossRate.usd * 100).toFixed(2))}%) <br/> ${numberFormat.format(parseInt(item.profitLossAmount.krw))}원(${numberFormat.format((item.profitLossRate.krw * 100).toFixed(2))}%)</span
+                                                data-flag="${(item.profitLossAmount.usd) / Math.abs(item.profitLossAmount.usd)}"
+                                                >$${numberFormat.format(Math.abs(item.profitLossAmount.usd).toFixed(2))} (${numberFormat.format((Math.abs(item.profitLossRate.usd) * 100).toFixed(2))}%) <br/> <span data-flag="${Math.abs(item.profitLossAmount.krw) / item.profitLossAmount.krw}">${numberFormat.format(parseInt(Math.abs(item.profitLossAmount.krw)))}원(${numberFormat.format((Math.abs(item.profitLossRate.krw) * 100).toFixed(2))}%)</span></span
                                             >
                                         </div></span>
                                 </div>
