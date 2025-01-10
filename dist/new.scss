@@ -21,6 +21,9 @@
     max-width: min-content;
 }
 
+$media-size: 1700px;
+$media-size-2: 1200px;
+
 #horizontal-stockbox {
     max-width: 80rem;
     & > ul {
@@ -28,6 +31,16 @@
         overflow-y: auto;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
+        @media (max-width: #{$media-size}) {
+            & {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: #{$media-size-2}) {
+            & {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
         gap: .5rem;
     }
     & > h4 {
@@ -41,13 +54,30 @@ body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data
     & > ul {
         grid-template-columns: repeat(3, 1fr);
     }
+    @media (max-width: #{$media-size}) {
+        & {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: #{$media-size-2}) {
+        & {
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
 }
 
 
 #profit-contents > ul {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
     gap: .5rem;
+    @media (max-width: #{$media-size}) {
+        & {
+            gap: .2rem;
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+    grid-template-columns: repeat(5, 1fr);
+    overflow-x: auto;
     & > li {
       list-style: none;
       display: grid;
