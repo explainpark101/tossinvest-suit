@@ -45,7 +45,19 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
     stockHorizontalBox.innerHTML = `
         <div style="display: flex; justify-content: space-between;">
             <h4>내 투자</h4>
-            <label style="display:flex; gap: .1rem; align-items: center;"><input type="checkbox" id="show-two-row"/><span> 두줄보기</span></label>
+            <div style="display: flex; gap: .5rem;">
+                <select id="sorting-method" class="tw-1wkoka59 form-control">
+                    <option value="1">수익금 높은 순</option>
+                    <option value="-1">수익금 낮은 순</option>
+                    <option value="2">총 수익률 높은 순</option>
+                    <option value="-2">총 수익률 낮은 순</option>
+                    <option value="3">일간 수익률 높은 순</option>
+                    <option value="-3">일간 수익률 낮은 순</option>
+                    <option value="4">평가금액 높은 순</option>
+                    <option value="-4">평가금액 낮은 순</option>
+                </select>
+                <label style="display:flex; gap: .1rem; align-items: center;"><input type="checkbox" id="show-two-row"/><span> 두줄보기</span></label>
+            </div>
         </div>
         <div id='profit-contents'></div>
         <ul id='stock-items'></ul>
@@ -53,8 +65,22 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
     const twoRowCheckbox = stockHorizontalBox.querySelector(`input#show-two-row`);
     twoRowCheckbox.checked = localStorage.getItem("show-two-row") == 'true';
     twoRowCheckbox.addEventListener("input", e=>{localStorage.setItem("show-two-row", e.target.checked)});
+    const sortingSelect = stockHorizontalBox.querySelector(`select#sorting-method`);
+    sortingSelect.value = localStorage.getItem("sort-method") ?? 1;
+    sortingSelect.addEventListener("input", e=>localStorage.setItem("sort-method", sortingSelect.value));
     let horizontalBtns = await waitForElement(`#__next > div > div.ho2myi1 > main > div > div > div > div.njzdl30 > div > div.njzdl36`);
     horizontalBtns.insertAdjacentElement("beforebegin", stockHorizontalBox);
+    const sortFunction = (a, b) => {
+        const flag = sortingSelect.value / Math.abs(sortingSelect.value);
+        const sortingColumn = {
+            1: "profitLossAmount", // 총수익금
+            2: "profitLossRate", // 총수익률
+            3: "dailyProfitLossRate", // 일간 수익률
+            4: "evaluatedAmount", // 평가금액
+        }[Math.abs(sortingSelect.value)];
+        return flag * ((b[sortingColumn]?.usd ?? b[sortingColumn]) - (a[sortingColumn]?.usd ?? a[sortingColumn]));
+    }
+
     (async()=>{
         while(true) {
             await sleep(100);
@@ -62,10 +88,10 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
             let profitElement = `
                 <ul style="--tds-desktop-foreground-color: var(--adaptiveGrey800); font-size: 0.7rem">
                     <li><span>총 투자:</span> <span>${numberFormat.format(myInvests.principalAmount.krw.toFixed(2))}원 ($${numberFormat.format(myInvests.principalAmount.usd)})</span></li>
-                    <li><span>평가금:</span><span style="color: var(--${myInvests.profitLossRate.krw > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.krw < 0 ? 'adaptiveBlue500' : 'adaptiveGrey8000'})">${numberFormat.format(myInvests.evaluatedAmount.krw.toFixed(0))}원 (${(myInvests.profitLossRate.krw * 100).toFixed(2)}% )</span></li>
-                    <li><span>손실액:</span><span style="color: var(--${myInvests.profitLossRate.krw  > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.krw < 0 ? 'adaptiveBlue500' : 'adaptiveGrey8000'})">${numberFormat.format(myInvests.profitLossAmount.krw.toFixed(0))}원 (${(myInvests.profitLossRate.krw * 100).toFixed(2)}%)</span></li>
-                    <li><span>평가금($):</span><span style="color: var(--${myInvests.profitLossRate.usd > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.usd < 0 ? 'adaptiveBlue500' : 'adaptiveGrey8000'})">$${numberFormat.format(myInvests.evaluatedAmount.usd.toFixed(2))} (${(myInvests.profitLossRate.usd * 100).toFixed(2)}% )</span></li>
-                    <li><span>손실액($):</span><span style="color: var(--${myInvests.profitLossRate.usd > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.usd < 0 ? 'adaptiveBlue500' : 'adaptiveGrey8000'})">$${numberFormat.format(myInvests.profitLossAmount.usd.toFixed(2))} (${(myInvests.profitLossRate.usd * 100).toFixed(2)}%)</span></li>
+                    <li><span>평가금:</span><span>${numberFormat.format(myInvests.evaluatedAmount.krw.toFixed(0))}원 (<span  style="color: var(--${myInvests.profitLossRate.krw > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.krw < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})">${(myInvests.profitLossRate.krw * 100).toFixed(2)}%</span> )</span></li>
+                    <li><span>손실액:</span><span>${numberFormat.format(myInvests.profitLossAmount.krw.toFixed(0))}원 (<span  style="color: var(--${myInvests.profitLossRate.krw  > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.krw < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})">${(myInvests.profitLossRate.krw * 100).toFixed(2)}%</span>)</span></li>
+                    <li><span>평가금($):</span><span>$${numberFormat.format(myInvests.evaluatedAmount.usd.toFixed(2))} (<span  style="color: var(--${myInvests.profitLossRate.usd > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.usd < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})">${(myInvests.profitLossRate.usd * 100).toFixed(2)}%</span> )</span></li>
+                    <li><span>손실액($):</span><span>$${numberFormat.format(myInvests.profitLossAmount.usd.toFixed(2))} (<span  style="color: var(--${myInvests.profitLossRate.usd > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.usd < 0 ? 'adaptiveBlue500' : 'adaptiveGrey800'})">${(myInvests.profitLossRate.usd * 100).toFixed(2)}%</span>)</span></li>
                 </ul>
             `;
             stockHorizontalBox.querySelector("#profit-contents").innerHTML = profitElement;
@@ -178,7 +204,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                 return div;
             }
             stockHorizontalBox.querySelector("ul#stock-items").innerHTML = '';
-            myInvests.us.items.sort((a, b)=>(b.profitLossAmount.usd - a.profitLossAmount.usd)).map(el=>createElement(el)).forEach(el=>{
+            myInvests.us.items.sort(sortFunction).map(el=>createElement(el)).forEach(el=>{
                 stockHorizontalBox.querySelector("ul#stock-items").appendChild(el);
             });
         }

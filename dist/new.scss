@@ -1,3 +1,8 @@
+:root {
+    --pico-icon-chevron: url(data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='rgb(136, 145, 164)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E);
+    --pico-form-element-spacing-horizontal: 1rem;
+}
+
 [data-section-name="주문하기"] {
     transition: 200ms border;
     border: transparent 4px solid;
@@ -102,4 +107,32 @@ body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data
 }
 #__next > div > div.ho2myi1 > main > div > div > div > div.njzdl30 > div > div._1sivumi0 > div:nth-child(2) > span:is(:nth-child(4), :nth-child(5)) {
     white-space: pre;
+}
+
+select.form-control {
+
+
+    color: var(--pc-button-hover-color);
+    background-color: #26262d;
+    &:hover {
+        background-color: #33333c;
+    }
+    box-shadow: inset 0 0 0 1px var(--pc-button-box-shadow-hover-color);
+    display: var(--pc-button-display);
+    justify-content: center;
+    align-items: center;
+
+
+    padding-right: calc(var(--pico-form-element-spacing-horizontal) + 1.5rem);
+    padding-left: var(--pico-form-element-spacing-horizontal);
+    padding-inline-start: var(--pico-form-element-spacing-horizontal);
+    padding-inline-end: calc(var(--pico-form-element-spacing-horizontal) + 1.5rem);
+
+    background-image: var(--pico-icon-chevron);
+    background-position: center right .75rem;
+    background-size: 1rem auto;
+    background-repeat: no-repeat;
+
+    border-radius: 4px;
+    border: none;
 }
