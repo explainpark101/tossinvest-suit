@@ -193,6 +193,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                             </div>
                         </div>
                     `;
+                if (location.pathname == `/stocks/${item.stockCode}/order`) div.querySelector("div").classList.add("_1oe23q56");
                 div.addEventListener("click", e=>{
                     if (location.pathname == `/stocks/${item.stockCode}/order`) return e.preventDefault();
                     let a = document.createElement("a");
