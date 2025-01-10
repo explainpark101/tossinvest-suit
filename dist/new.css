@@ -9,3 +9,53 @@
 [data-section-name=주문하기]:has([data-contents-label=구매][data-state=checked]) {
   border-color: red;
 }
+
+[data-contents-label=소수점] {
+  pointer-events: none;
+  max-width: min-content;
+}
+
+#horizontal-stockbox {
+  max-width: 80rem;
+}
+#horizontal-stockbox > ul {
+  max-height: 85px;
+  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+}
+#horizontal-stockbox > h4 {
+  margin: 0;
+  margin-bottom: 0.2rem;
+}
+
+body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data-section-name=숨김])) #horizontal-stockbox {
+  max-width: calc(80rem - 350px);
+}
+body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data-section-name=숨김])) #horizontal-stockbox > ul {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+#profit-contents > ul {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+}
+#profit-contents > ul > li {
+  list-style: none;
+  display: grid;
+  grid-auto-flow: column;
+}
+#profit-contents > ul > li > span {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#__next > div > div.ho2myi1 > main > div > div > div > div.njzdl30 > div > div._1sivumi0 > div:nth-child(2) {
+  flex-wrap: wrap;
+}
+
+#__next > div > div.ho2myi1 > main > div > div > div > div.njzdl30 > div > div._1sivumi0 > div:nth-child(2) > span:is(:nth-child(4), :nth-child(5)) {
+  white-space: pre;
+}
