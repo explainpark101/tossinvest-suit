@@ -8,6 +8,7 @@
         border-color: red;
     }
 }
+
 [data-section-name="리모콘"]:has([data-section-name="내투자"]) {
     max-width: fit-content !important;
     [data-section-name="내투자"] {

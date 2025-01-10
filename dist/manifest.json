@@ -1,6 +1,6 @@
 {
   "name": "TossInvest Helper",
-  "version": "1.0.0.1",
+  "version": "1.0.0.2",
   "description": "토스증권 실수 줄이기",
   "manifest_version": 3,
   "content_scripts": [
@@ -8,7 +8,7 @@
       "matches": ["*://tossinvest.com/*"],
       "run_at": "document_start",
       "all_frames": true,
-      "js": ["new.js"],
+      "js": ["common.js", "new.js"],
       "css": ["new.css"]
     }
   ]
