@@ -33,12 +33,12 @@ $media-size-2: 1200px;
         grid-template-columns: repeat(4, 1fr);
         @media (max-width: #{$media-size}) {
             & {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
         @media (max-width: #{$media-size-2}) {
             & {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(1, 1fr);
             }
         }
         gap: .5rem;
@@ -50,6 +50,7 @@ $media-size-2: 1200px;
 }
 
 body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data-section-name="숨김"])) #horizontal-stockbox {
+    // full-size
     max-width: calc(80rem - 350px);
     & > ul {
         grid-template-columns: repeat(3, 1fr);
