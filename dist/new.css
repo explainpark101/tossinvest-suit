@@ -3,11 +3,11 @@
   transition: 200ms border;
   border: transparent 4px solid;
 }
-[data-section-name=주문하기]:has([data-contents-label=판매]:not([aria-checked=false])) {
+[data-section-name=주문하기]:has([data-contents-label=판매][aria-checked=true]) {
   border-color: cyan;
 }
-[data-section-name=주문하기]:has([data-contents-label=구매]:not([aria-checked=false])) {
-  border-color: cyan;
+[data-section-name=주문하기]:has([data-contents-label=구매][data-state=checked]) {
+  border-color: red;
 }
 
 [data-section-name=리모콘]:has([data-section-name=내투자]) {
