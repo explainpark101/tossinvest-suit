@@ -1,0 +1,21 @@
+@charset "UTF-8";
+[data-section-name=주문하기] {
+  transition: 200ms border;
+  border: transparent 4px solid;
+}
+
+[data-section-name=주문하기]:has([data-contents-label=판매]:not([aria-checked=false])) {
+  border: red 4px solid;
+}
+
+[data-section-name=리모콘]:has([data-section-name=내투자]) {
+  max-width: fit-content !important;
+}
+[data-section-name=리모콘]:has([data-section-name=내투자]) [data-section-name=내투자] {
+  max-width: fit-content;
+}
+
+[data-contents-label=소수점] {
+  pointer-events: none;
+  max-width: min-content;
+}
