@@ -32,7 +32,7 @@
 }
 @media (max-width: 1200px) {
   #horizontal-stockbox > ul {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 #horizontal-stockbox > h4 {
@@ -47,12 +47,12 @@ body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data
   grid-template-columns: repeat(3, 1fr);
 }
 @media (max-width: 1700px) {
-  body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data-section-name=숨김])) #horizontal-stockbox {
+  body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data-section-name=숨김])) #horizontal-stockbox > ul {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 @media (max-width: 1200px) {
-  body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data-section-name=숨김])) #horizontal-stockbox {
+  body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data-section-name=숨김])) #horizontal-stockbox > ul {
     grid-template-columns: repeat(1, 1fr);
   }
 }
