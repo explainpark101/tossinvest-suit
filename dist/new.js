@@ -55,6 +55,8 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                     <option value="-3">일간 수익률 낮은 순</option>
                     <option value="4">평가금액 높은 순</option>
                     <option value="-4">평가금액 낮은 순</option>
+                    <option value="5">1주당수익금 큰 순</option>
+                    <option value="-5">1주당수익금 작은 순</option>
                 </select>
                 <label style="display:flex; gap: .1rem; align-items: center;"><input type="checkbox" id="show-two-row"/><span> 두줄보기</span></label>
             </div>
@@ -70,8 +72,16 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
     sortingSelect.addEventListener("input", e=>localStorage.setItem("sort-method", sortingSelect.value));
     let horizontalBtns = await waitForElement(`#__next > div > div.ho2myi1 > main > div > div > div > div.njzdl30 > div > div.njzdl36`);
     horizontalBtns.insertAdjacentElement("beforebegin", stockHorizontalBox);
+    /**
+     * @param { StockItem } a
+     * @param { StockItem } b
+     * @returns { Number }
+     */
     const sortFunction = (a, b) => {
         const flag = sortingSelect.value / Math.abs(sortingSelect.value);
+        if (Math.abs(sortingSelect.value) == 5) {
+            return flag * ((b.currentPrice.usd - b.purchasePrice.usd) - (a.currentPrice.usd - a.purchasePrice.usd));
+        }
         const sortingColumn = {
             1: "profitLossAmount", // 총수익금
             2: "profitLossRate", // 총수익률
@@ -161,6 +171,27 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                 "
                                                 >${item.tradableQuantity}주</span
                                             >
+                                            <span
+                                                class="tw-1r5dc8g0"
+                                                data-contents-label="보유수량"
+                                                style="
+                                                    --tds-desktop-font-weight: 500;
+                                                    --tds-desktop-foreground-color: var(
+                                                        --adaptiveGrey600
+                                                    );
+                                                    --tds-desktop-line-height: 1.45;
+                                                    --tds-desktop-font-size: 10px;
+                                                "
+                                            >1주당수익금
+                                                <span
+                                                    style="
+                                                        --tds-desktop-foreground-color: var(
+                                                            --${item.currentPrice.usd - item.purchasePrice.usd <= 0 ? 'adaptiveBlue500' : 'adaptiveRed500'}
+                                                        );
+                                                        color: var(--tds-desktop-foreground-color);
+                                                    "
+                                                >$${numberFormat.format((item.currentPrice.usd - item.purchasePrice.usd).toFixed(2))}</span>
+                                            </span>
                                         </div></span
                                     ><span class="tw-1uqcyiik tw-1uqcyiim"
                                         ><div class="tw-1a59dbx0 tw-1a59dbx1 _1p5yqoh0">
