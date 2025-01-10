@@ -23,7 +23,9 @@
   overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rem;
+  font-size: 0.9em;
+  gap: 0.2rem;
+  transition: 150ms;
 }
 @media (max-width: 1700px) {
   #horizontal-stockbox > ul {
@@ -35,9 +37,12 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
-#horizontal-stockbox > h4 {
+#horizontal-stockbox h4 {
   margin: 0;
   margin-bottom: 0.2rem;
+}
+#horizontal-stockbox:has(#show-two-row:checked) > ul {
+  max-height: 146px;
 }
 
 body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data-section-name=숨김])) #horizontal-stockbox {

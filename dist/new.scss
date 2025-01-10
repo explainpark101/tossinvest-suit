@@ -31,6 +31,9 @@ $media-size-2: 1200px;
         overflow-y: auto;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
+        font-size: 0.9em;
+        gap: .2rem;
+        transition: 150ms;
         @media (max-width: #{$media-size}) {
             & {
                 grid-template-columns: repeat(2, 1fr);
@@ -41,11 +44,15 @@ $media-size-2: 1200px;
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-        gap: .5rem;
     }
-    & > h4 {
+    & h4 {
         margin: 0;
         margin-bottom: .2rem;
+    }
+    &:has(#show-two-row:checked) {
+        & > ul {
+            max-height: 146px;
+        }
     }
 }
 

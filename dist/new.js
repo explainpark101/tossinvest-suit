@@ -42,7 +42,17 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
     // MARK: 내 투자
     const stockHorizontalBox = document.createElement("div");
     stockHorizontalBox.id = "horizontal-stockbox";
-    stockHorizontalBox.innerHTML = "<h4>내 투자</h4><div id='profit-contents'></div><ul id='stock-items'></ul>";
+    stockHorizontalBox.innerHTML = `
+        <div style="display: flex; justify-content: space-between;">
+            <h4>내 투자</h4>
+            <label style="display:flex; gap: .1rem; align-items: center;"><input type="checkbox" id="show-two-row"/><span> 두줄보기</span></label>
+        </div>
+        <div id='profit-contents'></div>
+        <ul id='stock-items'></ul>
+    `;
+    const twoRowCheckbox = stockHorizontalBox.querySelector(`input#show-two-row`);
+    twoRowCheckbox.checked = localStorage.getItem("show-two-row") == 'true';
+    twoRowCheckbox.addEventListener("input", e=>{localStorage.setItem("show-two-row", e.target.checked)});
     let horizontalBtns = await waitForElement(`#__next > div > div.ho2myi1 > main > div > div > div > div.njzdl30 > div > div.njzdl36`);
     horizontalBtns.insertAdjacentElement("beforebegin", stockHorizontalBox);
     (async()=>{
@@ -50,7 +60,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
             await sleep(100);
             const myInvests = await getMyInvest().then(resp=>resp.result.sections[0].data);
             let profitElement = `
-                <ul style="--tds-desktop-foreground-color: var(--adaptiveGrey800);">
+                <ul style="--tds-desktop-foreground-color: var(--adaptiveGrey800); font-size: 0.7rem">
                     <li><span>총 투자:</span> <span>${numberFormat.format(myInvests.principalAmount.krw.toFixed(2))}원 ($${numberFormat.format(myInvests.principalAmount.usd)})</span></li>
                     <li><span>평가금:</span><span style="color: var(--${myInvests.profitLossRate.krw > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.krw < 0 ? 'adaptiveBlue500' : 'adaptiveGrey8000'})">${numberFormat.format(myInvests.evaluatedAmount.krw.toFixed(0))}원 (${(myInvests.profitLossRate.krw * 100).toFixed(2)}% )</span></li>
                     <li><span>손실액:</span><span style="color: var(--${myInvests.profitLossRate.krw  > 0 ? 'adaptiveRed500' : myInvests.profitLossRate.krw < 0 ? 'adaptiveBlue500' : 'adaptiveGrey8000'})">${numberFormat.format(myInvests.profitLossAmount.krw.toFixed(0))}원 (${(myInvests.profitLossRate.krw * 100).toFixed(2)}%)</span></li>
@@ -168,7 +178,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                 return div;
             }
             stockHorizontalBox.querySelector("ul#stock-items").innerHTML = '';
-            myInvests.us.items.sort((a, b)=>(b.evaluatedAmount.usd - a.evaluatedAmount.usd)).map(el=>createElement(el)).forEach(el=>{
+            myInvests.us.items.sort((a, b)=>(b.profitLossAmount.usd - a.profitLossAmount.usd)).map(el=>createElement(el)).forEach(el=>{
                 stockHorizontalBox.querySelector("ul#stock-items").appendChild(el);
             });
         }
