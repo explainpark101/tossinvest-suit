@@ -249,20 +249,22 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                 if (isAftermarketOpen() || !isUSMarketWeekend(new Date(Date.now()))) {
                     itemSubData = await getLastTradeTick(item.stockCode);
                     if (itemSubData.price != item.currentPrice.usd) {
-                        const priceChangeRate = itemSubData.price / item.currentPrice.usd;
+                        const newEvaluatedAmount = item.tradableQuantity * itemSubData.price;
+                        const totalAmount = item.purchaseAmount.usd;
 
-                        item.evaluatedAmount.usd *= priceChangeRate;
-                        item.profitLossAmount.usd /= priceChangeRate;
-                        item.profitLossRate.usd /= priceChangeRate;
+                        item.evaluatedAmount.usd = newEvaluatedAmount;
+                        item.profitLossAmount.usd = newEvaluatedAmount- totalAmount - (item.commission.usd);
+                        item.profitLossRate.usd = (newEvaluatedAmount- totalAmount - (item.commission.usd)) / totalAmount;
 
                         item.currentPrice.usd = itemSubData.price;
                     }
                     if (itemSubData.priceKrw != item.currentPrice.krw) {
-                        const priceChangeRate = itemSubData.priceKrw / item.currentPrice.krw;
+                        const newEvaluatedAmount = item.tradableQuantity * itemSubData.priceKrw;
+                        const totalAmount = item.purchaseAmount.krw;
 
-                        item.evaluatedAmount.krw *= priceChangeRate;
-                        item.profitLossAmount.krw /= priceChangeRate;
-                        item.profitLossRate.krw /= priceChangeRate;
+                        item.evaluatedAmount.krw = newEvaluatedAmount;
+                        item.profitLossAmount.krw = newEvaluatedAmount- totalAmount - item.commission.krw;
+                        item.profitLossRate.krw = (newEvaluatedAmount- totalAmount - item.commission.krw) / totalAmount;
 
                         item.currentPrice.krw = itemSubData.priceKrw;
                     }
