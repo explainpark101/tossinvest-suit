@@ -80,6 +80,25 @@ const getAvgDollarPrice = async () => {
     return result;
 }
 
+/**
+ * @argument { ?String } stockCode
+ * @returns { Promise<CandleTick> }
+ */
+const getLastTradeTick = (stockCode=null) => {
+    if (stockCode === null) stockCode = location.pathname.split("/").at(2);
+    return fetch(`https://wts-info-api.tossinvest.com/api/v1/stock-prices/${stockCode}/ticks?count=1&session=1`, {
+        "headers": {
+          "accept": "application/json",
+          "accept-language": "ko,en;q=0.9,en-US;q=0.8,ja;q=0.7",
+        },
+        "referrerPolicy": "no-referrer-when-downgrade",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    }).then(resp=>resp.json()).then(({result})=>result[0]);
+}
+
 const numberFormat = new Intl.NumberFormat("ko-KR");
 (async()=>{
     // MARK: 주문가능금액
@@ -165,8 +184,27 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
              * @param {StockItem} item
              * @returns
              */
-            let createElement = (item) => {
+            let createElement = async (item) => {
                 let div = document.createElement("div");
+                const itemSubData = await getLastTradeTick(item.stockCode);
+                if (itemSubData.price != item.currentPrice.usd) {
+                    const priceChangeRate = itemSubData.price / item.currentPrice.usd;
+
+                    item.evaluatedAmount.usd *= priceChangeRate;
+                    item.profitLossAmount.usd /= priceChangeRate;
+                    item.profitLossRate.usd /= priceChangeRate;
+
+                    item.currentPrice.usd = itemSubData.price;
+                }
+                if (itemSubData.priceKrw != item.currentPrice.krw) {
+                    const priceChangeRate = itemSubData.priceKrw / item.currentPrice.krw;
+
+                    item.evaluatedAmount.krw *= priceChangeRate;
+                    item.profitLossAmount.krw /= priceChangeRate;
+                    item.profitLossRate.krw /= priceChangeRate;
+
+                    item.currentPrice.krw = itemSubData.priceKrw;
+                }
                 div.innerHTML = `
                 <div
                             class="tw-1uqcyii2 tw-1uqcyii0 tw-1uqcyiih tw-1uqcyiii"
@@ -251,6 +289,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                         </div></span
                                     ><span class="tw-1uqcyiik tw-1uqcyiim"
                                         ><div class="tw-1a59dbx0 tw-1a59dbx1 _1p5yqoh0">
+                                            <small>1주당 $${numberFormat.format(itemSubData.price.toFixed(2))} (${numberFormat.format(itemSubData.priceKrw.toFixed(2))}원)</small>
                                             <span
                                                 class="tw-1r5dc8g0"
                                                 data-contents-label="보유금액"
@@ -292,10 +331,9 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                 });
                 return div;
             }
+            let stockItems = await Promise.all(myInvests.us.items.sort(sortFunction).map(el=>createElement(el)));
             stockHorizontalBox.querySelector("ul#stock-items").innerHTML = '';
-            myInvests.us.items.sort(sortFunction).map(el=>createElement(el)).forEach(el=>{
-                stockHorizontalBox.querySelector("ul#stock-items").appendChild(el);
-            });
+            stockItems.forEach(el=>stockHorizontalBox.querySelector(`ul#stock-items`).appendChild(el));
         }
     })();
     (async()=>{

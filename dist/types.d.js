@@ -235,3 +235,18 @@
  * @typedef {Object} CurrencyChangeDetailResponse
  * @property {CurrencyChangeDetailResult} result - 결과
  */
+
+/**
+ * @typedef {Object} CandleTick
+ * @property {string} time - 거래 시간 (HH:mm:ss 형식).
+ * @property {string} code - 거래 코드.
+ * @property {number} price - 거래 가격 (기본 통화).
+ * @property {number} priceKrw - 거래 가격 (KRW 정수 부분).
+ * @property {number} priceKrwDecimal - 거래 가격 (KRW 소수 포함).
+ * @property {number} base - 기준 가격 (기본 통화).
+ * @property {number} baseKrw - 기준 가격 (KRW 정수 부분).
+ * @property {number} baseKrwDecimal - 기준 가격 (KRW 소수 포함).
+ * @property {number} quantity - 거래 수량.
+ * @property {string} tradeType - 거래 유형 ("BUY" 또는 "SELL").
+ * @property {number} cumulativeVolume - 누적 거래량.
+ */
