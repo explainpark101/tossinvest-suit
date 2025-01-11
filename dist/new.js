@@ -99,6 +99,62 @@ const getLastTradeTick = (stockCode=null) => {
     }).then(resp=>resp.json()).then(({result})=>result[0]);
 }
 
+/**
+ * Checks if the current time in KST falls within the US stock market aftermarket hours,
+ * considering daylight saving time (DST).
+ * @returns {boolean} - True if the current time is within aftermarket hours, false otherwise.
+ */
+function isAftermarketOpen() {
+    // Get the current date in UTC
+    const nowUTC = new Date();
+
+    // Calculate the current year
+    const year = nowUTC.getUTCFullYear();
+
+    // Define DST start and end dates for the given year
+    const dstStart = new Date(Date.UTC(year, 2, 8)); // March 8th in UTC
+    const dstEnd = new Date(Date.UTC(year, 10, 1)); // November 1st in UTC
+
+    // Adjust to the second Sunday of March
+    dstStart.setUTCDate(8 + (7 - dstStart.getUTCDay()) % 7);
+    // Adjust to the first Sunday of November
+    dstEnd.setUTCDate(1 + (7 - dstEnd.getUTCDay()) % 7);
+
+    // Check if the current date is within DST period
+    const isDST = nowUTC >= dstStart && nowUTC < dstEnd;
+
+    // Define aftermarket hours in KST
+    const aftermarketStart = isDST ? 5 * 60 : 6 * 60; // 05:00 or 06:00 in minutes
+    const aftermarketEnd = isDST ? 17 * 60 : 18 * 60;   // 07:00 or 08:00 in minutes
+
+    // Get the current time in KST
+    const nowKST = new Date(Date.now()); // UTC + 9 hours
+    const hours = nowKST.getHours();
+    const minutes = nowKST.getMinutes();
+
+    // Current time in minutes
+    const currentTime = hours * 60 + minutes;
+
+    // Check if the current time is within aftermarket hours
+    return currentTime >= aftermarketStart && currentTime < aftermarketEnd;
+}
+
+/**
+ * Checks if the given date is a weekend (Saturday or Sunday) in the US market.
+ * @param {Date} [date=new Date()] - The date to check (defaults to the current date).
+ * @returns {boolean} - True if the date is a weekend, false otherwise.
+ */
+function isUSMarketWeekend(date = new Date()) {
+    // Get the day of the week (0: Sunday, 6: Saturday)
+    const dayOfWeek = date.getUTCDay(); // Use UTC to avoid timezone issues
+    return dayOfWeek === 0 || dayOfWeek === 6; // Sunday (0) or Saturday (6)
+}
+
+// Example usage
+console.log(isUSMarketWeekend()); // true or false, depending on the current day
+
+
+
 const numberFormat = new Intl.NumberFormat("ko-KR");
 (async()=>{
     // MARK: 주문가능금액
@@ -186,24 +242,30 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
              */
             let createElement = async (item) => {
                 let div = document.createElement("div");
-                const itemSubData = await getLastTradeTick(item.stockCode);
-                if (itemSubData.price != item.currentPrice.usd) {
-                    const priceChangeRate = itemSubData.price / item.currentPrice.usd;
-
-                    item.evaluatedAmount.usd *= priceChangeRate;
-                    item.profitLossAmount.usd /= priceChangeRate;
-                    item.profitLossRate.usd /= priceChangeRate;
-
-                    item.currentPrice.usd = itemSubData.price;
+                let itemSubData = {
+                    price: item.currentPrice.usd,
+                    priceKrw: item.currentPrice.krw,
                 }
-                if (itemSubData.priceKrw != item.currentPrice.krw) {
-                    const priceChangeRate = itemSubData.priceKrw / item.currentPrice.krw;
+                if (isAftermarketOpen() || !isUSMarketWeekend(new Date(Date.now()))) {
+                    itemSubData = await getLastTradeTick(item.stockCode);
+                    if (itemSubData.price != item.currentPrice.usd) {
+                        const priceChangeRate = itemSubData.price / item.currentPrice.usd;
 
-                    item.evaluatedAmount.krw *= priceChangeRate;
-                    item.profitLossAmount.krw /= priceChangeRate;
-                    item.profitLossRate.krw /= priceChangeRate;
+                        item.evaluatedAmount.usd *= priceChangeRate;
+                        item.profitLossAmount.usd /= priceChangeRate;
+                        item.profitLossRate.usd /= priceChangeRate;
 
-                    item.currentPrice.krw = itemSubData.priceKrw;
+                        item.currentPrice.usd = itemSubData.price;
+                    }
+                    if (itemSubData.priceKrw != item.currentPrice.krw) {
+                        const priceChangeRate = itemSubData.priceKrw / item.currentPrice.krw;
+
+                        item.evaluatedAmount.krw *= priceChangeRate;
+                        item.profitLossAmount.krw /= priceChangeRate;
+                        item.profitLossRate.krw /= priceChangeRate;
+
+                        item.currentPrice.krw = itemSubData.priceKrw;
+                    }
                 }
                 div.innerHTML = `
                 <div
