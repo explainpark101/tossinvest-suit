@@ -342,9 +342,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                             >1주당수익
                                                 <span
                                                     style="
-                                                        --tds-desktop-foreground-color: var(
-                                                            --${item.currentPrice.usd - item.purchasePrice.usd <= 0 ? 'adaptiveBlue500' : 'adaptiveRed500'}
-                                                        );
+                                                        --tds-desktop-foreground-color: var(--${item.currentPrice.usd - item.purchasePrice.usd <= 0 ? 'adaptiveBlue500' : 'adaptiveRed500'});
                                                         color: var(--tds-desktop-foreground-color);
                                                     "
                                                     data-flag="${Math.abs(item.currentPrice.usd - item.purchasePrice.usd) / (item.currentPrice.usd - item.purchasePrice.usd)}"
@@ -370,9 +368,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                 class="tw-1r5dc8g0"
                                                 style="
                                                     --tds-desktop-font-weight: 500;
-                                                    --tds-desktop-foreground-color: var(
-                                                        --${item.profitLossAmount.usd <= 0 ? 'adaptiveBlue500' : 'adaptiveRed500'}
-                                                    );
+                                                    --tds-desktop-foreground-color: var(--${item.profitLossAmount.usd <= 0 ? 'adaptiveBlue500' : 'adaptiveRed500'});
                                                     --tds-desktop-line-height: 1.45;
                                                     --tds-desktop-font-size: 12px;
                                                 "
