@@ -362,6 +362,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                     );
                                                     --tds-desktop-line-height: 1.45;
                                                     --tds-desktop-font-size: 14px;
+                                                    color: var(--tds-desktop-foreground-color);
                                                 "
                                                 >$${numberFormat.format(Math.abs(item.evaluatedAmount.usd).toFixed(2))} (${numberFormat.format(parseInt(Math.abs(item.evaluatedAmount.krw)))}원)</span
                                             ><span
@@ -371,6 +372,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                     --tds-desktop-foreground-color: var(--${item.profitLossAmount.usd <= 0 ? 'adaptiveBlue500' : 'adaptiveRed500'});
                                                     --tds-desktop-line-height: 1.45;
                                                     --tds-desktop-font-size: 12px;
+                                                    color: var(--tds-desktop-foreground-color);
                                                 "
                                                 data-flag="${(item.profitLossAmount.usd) / Math.abs(item.profitLossAmount.usd)}"
                                                 >$${numberFormat.format(Math.abs(item.profitLossAmount.usd).toFixed(2))} (${numberFormat.format((Math.abs(item.profitLossRate.usd) * 100).toFixed(2))}%) <br/> <span data-flag="${Math.abs(item.profitLossAmount.krw) / item.profitLossAmount.krw}">${numberFormat.format(parseInt(Math.abs(item.profitLossAmount.krw)))}원(${numberFormat.format((Math.abs(item.profitLossRate.krw) * 100).toFixed(2))}%)</span></span
