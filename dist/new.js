@@ -241,7 +241,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
              * @returns
              */
             let createElement = async (item) => {
-                let div = document.createElement("div");
+                let div = document.createElement("a");
                 let itemSubData = {
                     price: item.currentPrice.usd,
                     priceKrw: item.currentPrice.krw,
@@ -382,15 +382,19 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                             </div>
                         </div>
                     `;
-                if (location.pathname == `/stocks/${item.stockCode}/order`) div.querySelector("div").classList.add("_1oe23q56");
-                div.addEventListener("click", e=>{
-                    if (location.pathname == `/stocks/${item.stockCode}/order`) return e.preventDefault();
-                    let a = document.createElement("a");
-                    a.href = `/stocks/${item.stockCode}/order`;
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                });
+                div.href = `/stocks/${item.stockCode}/order`;
+                if (location.pathname == `/stocks/${item.stockCode}/order`) {
+                    div.querySelector("div").classList.add("_1oe23q56");
+                    div.href = `#current`;
+                }
+                // div.addEventListener("click", e=>{
+                //     if (location.pathname == `/stocks/${item.stockCode}/order`) return e.preventDefault();
+                //     let a = document.createElement("a");
+                //     a.href = `/stocks/${item.stockCode}/order`;
+                //     document.body.appendChild(a);
+                //     a.click();
+                //     a.remove();
+                // });
                 return div;
             }
             let stockItems = await Promise.all(myInvests.us.items.sort(sortFunction).map(el=>createElement(el)));
