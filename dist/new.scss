@@ -31,8 +31,9 @@ $media-size-2: 1200px;
 
 #horizontal-stockbox {
     max-width: 80rem;
+    --height-one-line: 82px;
     & > ul {
-        max-height: 85px;
+        max-height: var(--height-one-line);
         overflow-y: auto;
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -56,7 +57,7 @@ $media-size-2: 1200px;
     }
     &:has(#show-two-row:checked) {
         & > ul {
-            max-height: 146px;
+            max-height: calc(2 * var(--height-one-line) + .2rem);
         }
     }
 }
@@ -105,8 +106,6 @@ body:not(:has(#__next > div > div._17lx8ak0 > div.gxe9ll0.gxe9ll1._17lx8ak1[data
 }
 
 select.form-control {
-
-
     color: var(--pc-button-hover-color);
     background-color: #26262d;
     &:hover {

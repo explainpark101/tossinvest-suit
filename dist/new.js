@@ -233,7 +233,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                     ]</span></li>
                 </ul>
             `;
-            stockHorizontalBox.querySelector("#profit-contents").innerHTML = profitElement;
+            // stockHorizontalBox.querySelector("#profit-contents").innerHTML = profitElement;
 
             /**
              *
@@ -387,14 +387,6 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                     div.querySelector("div").classList.add("_1oe23q56");
                     div.href = `#current`;
                 }
-                // div.addEventListener("click", e=>{
-                //     if (location.pathname == `/stocks/${item.stockCode}/order`) return e.preventDefault();
-                //     let a = document.createElement("a");
-                //     a.href = `/stocks/${item.stockCode}/order`;
-                //     document.body.appendChild(a);
-                //     a.click();
-                //     a.remove();
-                // });
                 return div;
             }
             let stockItems = await Promise.all(myInvests.us.items.sort(sortFunction).map(el=>createElement(el)));
