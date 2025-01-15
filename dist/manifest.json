@@ -1,6 +1,6 @@
 {
   "name": "TossInvest Helper",
-  "version": "1.1.5.1",
+  "version": "1.1.5.2",
   "description": "토스증권 실수 줄이기",
   "manifest_version": 3,
   "content_scripts": [

@@ -339,7 +339,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                     --tds-desktop-font-size: 10px;
                                                 "
 
-                                            >1주당수익
+                                            >1주당
                                                 <span
                                                     style="
                                                         --tds-desktop-foreground-color: var(--${item.currentPrice.usd - item.purchasePrice.usd <= 0 ? 'adaptiveBlue500' : 'adaptiveRed500'});
