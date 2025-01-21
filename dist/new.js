@@ -348,10 +348,24 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                     data-flag="${Math.abs(item.currentPrice.usd - item.purchasePrice.usd) / (item.currentPrice.usd - item.purchasePrice.usd)}"
                                                 >$${numberFormat.format(Math.abs(item.currentPrice.usd - item.purchasePrice.usd).toFixed(2))}</span>
                                             </span>
+                                            <span
+                                                class="tw-1r5dc8g0"
+                                                data-contents-label="평균단가가"
+                                                style="
+                                                    --tds-desktop-font-weight: 500;
+                                                    --tds-desktop-foreground-color: var(
+                                                        --adaptiveGrey600
+                                                    );
+                                                    --tds-desktop-line-height: 1.45;
+                                                    --tds-desktop-font-size: 9px;
+                                                "
+
+                                            ><small>$${numberFormat.format(item.purchasePrice.usd.toFixed(2))} (${numberFormat.format(item.purchasePrice.krw.toFixed(2))}원)</small></span>
+                                            </span>
                                         </div></span
                                     ><span class="tw-1uqcyiik tw-1uqcyiim"
                                         ><div class="tw-1a59dbx0 tw-1a59dbx1 _1p5yqoh0">
-                                            <small>1주당 $${numberFormat.format(itemSubData.price.toFixed(2))} (${numberFormat.format(itemSubData.priceKrw.toFixed(2))}원)</small>
+                                            <small>현재가 $${numberFormat.format(itemSubData.price.toFixed(2))} (${numberFormat.format(itemSubData.priceKrw.toFixed(2))}원)</small>
                                             <span
                                                 class="tw-1r5dc8g0"
                                                 data-contents-label="보유금액"
