@@ -339,7 +339,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                     --tds-desktop-font-size: 10px;
                                                 "
 
-                                            >1주당
+                                            ><small>1주당
                                                 <span
                                                     style="
                                                         --tds-desktop-foreground-color: var(--${item.currentPrice.usd - item.purchasePrice.usd <= 0 ? 'adaptiveBlue500' : 'adaptiveRed500'});
@@ -347,6 +347,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                                                     "
                                                     data-flag="${Math.abs(item.currentPrice.usd - item.purchasePrice.usd) / (item.currentPrice.usd - item.purchasePrice.usd)}"
                                                 >$${numberFormat.format(Math.abs(item.currentPrice.usd - item.purchasePrice.usd).toFixed(2))}</span>
+                                                </small>
                                             </span>
                                             <span
                                                 class="tw-1r5dc8g0"
