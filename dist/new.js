@@ -221,6 +221,8 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
     }
 
     (async()=>{
+        /** @type { HTMLDivElement[] } */
+        let stockElements = Array();
         while(true) {
             await sleep(100);
             const myInvests = await getMyInvest().then(resp=>resp.result.sections[0].data);
@@ -241,33 +243,37 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
              * @returns
              */
             let createElement = async (item) => {
-                let div = document.createElement("a");
+                let div = stockElements.find(el=>el.dataset.stockCode == item.stockCode) || document.querySelector(`a[data-stock-code="${item.stockCode}"]`) || document.createElement("a");
+                div.dataset.stockCode = item.stockCode;
                 let itemSubData = {
                     price: item.currentPrice.usd,
                     priceKrw: item.currentPrice.krw,
                 }
                 if (isAftermarketOpen() || !isUSMarketWeekend(new Date(Date.now()))) {
-                    itemSubData = await getLastTradeTick(item.stockCode);
-                    if (itemSubData.price != item.currentPrice.usd) {
-                        const newEvaluatedAmount = item.tradableQuantity * itemSubData.price;
-                        const totalAmount = item.purchaseAmount.usd;
+                    itemSubData = await (async(item)=>{
+                        return itemSubData;
+                        let itemSubDataFetched = await getLastTradeTick(item.stockCode);
+                        if (itemSubDataFetched && itemSubDataFetched.price != item.currentPrice.usd) {
+                            const newEvaluatedAmount = item.tradableQuantity * itemSubDataFetched.price;
+                            const totalAmount = item.purchaseAmount.usd;
 
-                        item.evaluatedAmount.usd = newEvaluatedAmount;
-                        item.profitLossAmount.usd = newEvaluatedAmount- totalAmount - (item.commission.usd);
-                        item.profitLossRate.usd = (newEvaluatedAmount- totalAmount - (item.commission.usd)) / totalAmount;
+                            item.evaluatedAmount.usd = newEvaluatedAmount;
+                            item.profitLossAmount.usd = newEvaluatedAmount- totalAmount - (item.commission.usd);
+                            item.profitLossRate.usd = (newEvaluatedAmount- totalAmount - (item.commission.usd)) / totalAmount;
 
-                        item.currentPrice.usd = itemSubData.price;
-                    }
-                    if (itemSubData.priceKrw != item.currentPrice.krw) {
-                        const newEvaluatedAmount = item.tradableQuantity * itemSubData.priceKrw;
-                        const totalAmount = item.purchaseAmount.krw;
+                            item.currentPrice.usd = itemSubDataFetched.price;
+                        }
+                        if (itemSubDataFetched && itemSubDataFetched.priceKrw != item.currentPrice.krw) {
+                            const newEvaluatedAmount = item.tradableQuantity * itemSubDataFetched.priceKrw;
+                            const totalAmount = item.purchaseAmount.krw;
 
-                        item.evaluatedAmount.krw = newEvaluatedAmount;
-                        item.profitLossAmount.krw = newEvaluatedAmount- totalAmount - item.commission.krw;
-                        item.profitLossRate.krw = (newEvaluatedAmount- totalAmount - item.commission.krw) / totalAmount;
+                            item.evaluatedAmount.krw = newEvaluatedAmount;
+                            item.profitLossAmount.krw = newEvaluatedAmount- totalAmount - item.commission.krw;
+                            item.profitLossRate.krw = (newEvaluatedAmount- totalAmount - item.commission.krw) / totalAmount;
 
-                        item.currentPrice.krw = itemSubData.priceKrw;
-                    }
+                            item.currentPrice.krw = itemSubDataFetched.priceKrw;
+                        }
+                    })(item);
                 }
                 div.innerHTML = `
                 <div
@@ -279,7 +285,7 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                             data-tossinvest-log="ListRow"
                             data-contents-label="${item.stockName}"
                             data-parent-name="StockRow"
-                            style="transition: none; visibility: visible">
+                            style="transition: none; visibility: visible"  ,.>
                             <div class="tw-1uqcyii3 tw-1uqcyii6">
                                 <div data-nosnippet="true" class="favgr62 favgr60">
                                     <div class="c3f3of0 favgr68">
@@ -405,8 +411,9 @@ const numberFormat = new Intl.NumberFormat("ko-KR");
                 return div;
             }
             let stockItems = await Promise.all(myInvests.us.items.sort(sortFunction).map(el=>createElement(el)));
+            stockElements = stockItems;
             stockHorizontalBox.querySelector("ul#stock-items").innerHTML = '';
-            stockItems.forEach(el=>stockHorizontalBox.querySelector(`ul#stock-items`).appendChild(el));
+            stockElements.forEach(el=>stockHorizontalBox.querySelector(`ul#stock-items`).insertAdjacentElement("beforeEnd", el));
         }
     })();
     (async()=>{
